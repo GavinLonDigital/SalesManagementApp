@@ -1,0 +1,16 @@
+﻿@page "/"
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@namespace SalesManagementApp.Pages
+@using SalesManagementApp.Data
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    Layout = "_Layout";
+
+    var tokens = new TokenProvider
+    {
+        XsrfToken = Xsrf.GetAndStoreTokens(HttpContext).RequestToken
+    };
+
+}
+
+<component type="typeof(App)" param-InitialState="tokens" render-mode="ServerPrerendered" />

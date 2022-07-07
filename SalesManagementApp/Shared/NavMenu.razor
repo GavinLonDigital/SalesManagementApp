@@ -1,0 +1,76 @@
+﻿<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href=""><img src="/Images/Oexl.png" style="height:40px" class="img-fluid"/>Outdoor Excellence</a>
+        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+</div>
+
+<div class="@NavMenuCssClass mt-3" @onclick="ToggleNavMenu">
+    <nav class="flex-column">
+        <div class="nav-item px-3 d-sm-none">
+            <LoginDisplay/>
+        </div>
+        <AuthorizeView Roles="Admin, SM">
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="EmployeeManagement">
+                    <i class="fa fa-users"></i>&nbsp;&nbsp;Admin
+                </NavLink>
+            </div>
+        </AuthorizeView>
+        <AuthorizeView Roles = "SR">
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="ProductCatalog">
+                     <i class="fa fa-credit-card-alt"></i>&nbsp;&nbsp;Products
+                </NavLink>
+            </div>
+        </AuthorizeView>
+        <AuthorizeView Roles="SR">
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="SRDashboard">
+                    <i class="fa fa-pie-chart"></i>&nbsp;&nbsp;Dashboard
+                </NavLink>
+            </div>
+        </AuthorizeView>
+        <AuthorizeView Roles="TL">
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="TLDashboard">
+                    <i class="fa fa-pie-chart"></i>&nbsp;&nbsp;Dashboard
+                </NavLink>
+            </div>
+        </AuthorizeView>
+        <AuthorizeView Roles="SM"> 
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="SMDashboard">
+                    <i class="fa fa-pie-chart"></i>&nbsp;&nbsp;Dashboard
+                </NavLink>
+            </div>
+        </AuthorizeView>
+         <AuthorizeView Roles="SM"> 
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="Organisation">
+                    <i class="fa fa-sitemap"></i>&nbsp;&nbsp;Organisation
+                </NavLink>
+            </div>
+        </AuthorizeView>
+        <AuthorizeView Roles="SM, TL, SR"> 
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="Appointments">
+                    <i class="fa fa-calendar"></i>&nbsp;&nbsp;Appointments
+                </NavLink>
+            </div>
+        </AuthorizeView>
+    </nav>
+</div>
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}

@@ -1,0 +1,229 @@
+﻿@page "/Organisation"
+@attribute [Authorize(Roles ="SM")]
+@using Syncfusion.Blazor.Inputs
+@using Syncfusion.Blazor.Diagram
+
+@inject IOrganisationService OrganisationService
+
+<div class="col-lg-12 control-section sb-property-border">
+    <div class="content-wrapper">
+        <SfDiagramComponent Width="100%" Height="1600px" ConnectorCreating="@OnConnectorCreating" NodeCreating="@OnNodeCreating" InteractionController="@InteractionController.ZoomPan">
+            <ScrollSettings @bind-ScrollLimit="@scrollLimit"></ScrollSettings>
+            <DataSourceSettings ID="EmployeeId" ParentID="ReportsToId" DataSource="@OrganisationData"> </DataSourceSettings>
+            <Layout @bind-Type="Type" @bind-HorizontalSpacing="@HorizontalSpacing" @bind-Orientation="@OrientationType" @bind-VerticalSpacing="@VerticalSpacing" @bind-HorizontalAlignment="@HorizontalAlignment" @bind-VerticalAlignment="@VerticalAlignment" GetLayoutInfo="GetLayoutInfo">
+                <LayoutMargin @bind-Top="@Top" @bind-Bottom="@Bottom" @bind-Right="@Right" @bind-Left="@Left"></LayoutMargin>
+            </Layout>
+            <SnapSettings Constraints="@SnapConstraints.None"></SnapSettings>
+            <DiagramTemplates>
+                <NodeTemplate>
+                    @{ Node node1 = (context as Node);
+                        string NameId = (node1.Data as OrganisationModel).FirstName;
+                        string EmpId = (node1.Data as OrganisationModel).EmployeeId;
+                        string role = (node1.Data as OrganisationModel).JobTitle;
+                        string BgImage = (node1.Data as OrganisationModel).ImagePath;
+                        Syncfusion.Blazor.Diagram.Shapes type = (context as Node).Shape.Type;
+                        if (type == Syncfusion.Blazor.Diagram.Shapes.HTML)
+                        {
+                            <div style="position: absolute;
+        width: 100%;
+        height: 100%;
+        border: 1px solid #E0E0E0;
+        background: #FFFFFF;
+        box-sizing: border-box;
+        border-radius: 8px;
+        padding-top: 5px;">
+                                <div id="image" style="
+                            width: 62px;
+                            height: 65px;
+                            float: left;
+                            background-size: 60px 65px;
+                            background-image: url(@BgImage);
+                            border: 1px solid #E0E0E0;
+                            box-sizing: border-box;
+                            border-radius: 80px;
+                            margin-top: 12px;
+                            margin-bottom: 5px;
+                            margin-left: 5px;
+                            ">
+                                </div>
+                                <div>
+                                    <div id="header1" style="
+                            width: 165px;
+                            height: 14px;
+                            left: 664px;
+                            top: 152px;
+                            font-family: Roboto;
+                            font-style: normal;
+                            font-weight: 600;
+                            font-size: 13px;
+                            line-height: 14px;
+                            /* identical to box height, or 87% */
+                            letter-spacing: 0.1px;
+                            color: #000000;">
+                                        @NameId
+                                    </div>
+                                    <div id="header2" style="
+            /* width: 121px; */
+            /* height: 14px; */
+            left: 660px;
+            top: 170px;
+            font-family: Roboto;
+            font-style: normal;
+            font-weight: normal;
+            font-size: 11px;
+            line-height: 14px;
+            letter-spacing: 0.1px;
+            color: #7B7B7B;
+            ">
+                                        @role
+                                    </div>
+                                    <hr style="margin-top: 4px;margin-bottom: -10px;left: 553px;top: 192px;height: 0px;border: 1px solid #E0E0E0;border-top: none;">
+                                    <div style="top: 200px;font-family: Roboto;font-size: 10px;padding-top: 18px;padding-left: 72px;">
+                                        <table>
+                                            <tbody>
+                                                <tr>
+                                                    <td style="font-family: Roboto;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 10px;
+        line-height: 14px;
+        letter-spacing: 0.1px;
+        color: #7B7B7B;">
+                                                        Emp ID
+                                                    </td>
+                                                    <td style="font-family: Roboto;
+        font-style: normal;
+        font-weight: 600;
+        font-size: 11px;
+        line-height: 14px;
+        letter-spacing: 0.1px;
+        color: #323232;">
+                                                        @EmpId
+                                                    </td>
+                                                </tr>
+ 
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                </NodeTemplate>
+            </DiagramTemplates>
+        </SfDiagramComponent>
+    </div>
+</div>
+@code
+    {
+    private List<OrganisationModel> OrganisationData { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        OrganisationData = await OrganisationService.GetHierarchy();
+    }
+
+    private const string selecteditem = "image-pattern-style e-selected-style";
+    private const string unselecteditem = "image-pattern-style";
+    ScrollLimitMode scrollLimit { get; set; } = ScrollLimitMode.Diagram;
+    public SfDiagramComponent Diagram;
+    public int? HValue { get; set; } = 60;
+    public int? VValue { get; set; } = 60;
+    public LayoutType Type = LayoutType.HierarchicalTree;
+    public LayoutOrientation OrientationType = LayoutOrientation.LeftToRight;
+    public HorizontalAlignment HorizontalAlignment = HorizontalAlignment.Auto;
+    public VerticalAlignment VerticalAlignment = VerticalAlignment.Auto;
+    public int HorizontalSpacing = 60;
+    public int VerticalSpacing = 60;
+    public double Top = 50;
+    public double Bottom = 50;
+    public double Right = 50;
+    public double Left = 50;
+    Dictionary<string, string> dict = new Dictionary<string, string>() { { "topToBottom", selecteditem }, { "bottomToTop", unselecteditem }, { "leftToRight", unselecteditem }, { "rightToLeft", unselecteditem } };
+    
+
+    private void OnConnectorCreating(IDiagramObject connector)
+    {
+        (connector as Connector).Type = ConnectorSegmentType.Orthogonal;
+        (connector as Connector).TargetDecorator.Shape = DecoratorShape.None;
+        (connector as Connector).Style = new ShapeStyle() { StrokeColor = "#F16256", StrokeWidth = 1, StrokeDashArray = "3,3" };
+        (connector as Connector).Constraints = 0;
+        (connector as Connector).TargetDecorator = new DecoratorSettings()
+        {
+            Shape = DecoratorShape.Circle,
+            Style = new ShapeStyle()
+            {
+                StrokeColor = "#F16256",
+                Fill = "#F16256",
+                StrokeWidth = 1,
+            }
+        };
+    }
+    private TreeInfo GetLayoutInfo(IDiagramObject obj, TreeInfo options)
+    {
+        options.EnableSubTree = true;
+        options.Orientation = Orientation.Horizontal;
+        return options;
+    }
+    private void OnNodeCreating(IDiagramObject obj)
+    {
+        Node node = obj as Node;
+        node.Width = 190;
+        node.Height = 104;
+        node.Shape = new Shape()
+        { Type = Syncfusion.Blazor.Diagram.Shapes.HTML };
+    }
+    //Update the section to the property panel
+    private void UpdateSelection(string id)
+    {
+        for (int i = 0; i < dict.Count; i++)
+        {
+            var value = dict.Values.ElementAt(i);
+            var key = dict.Keys.ElementAt(i);
+            if (dict.ContainsKey(id) && key == id)
+            {
+                value = selecteditem;
+            }
+            else
+            {
+                value = unselecteditem;
+            }
+            dict.Remove(key);
+            dict.Add(key, value);
+        }
+    }
+    public class ImageFields
+    {
+        public string Text { get; set; }
+    }
+    private void HSpacingChange(Syncfusion.Blazor.Inputs.ChangeEventArgs<int?> args)
+    {
+        HValue = (int)args.Value;
+        HorizontalSpacing = int.Parse(args.Value.ToString());
+    }
+    private void VSpacingChange(Syncfusion.Blazor.Inputs.ChangeEventArgs<int?> args)
+    {
+        VValue = (int)args.Value;
+        VerticalSpacing = int.Parse(args.Value.ToString());
+    }
+    private void ToptoBottomClick()
+    {
+        UpdateSelection("topToBottom");
+        OrientationType = LayoutOrientation.TopToBottom;
+    }
+    private void LefttoRightClick()
+    {
+        UpdateSelection("leftToRight");
+        OrientationType = LayoutOrientation.LeftToRight;
+    }
+    private void RighttoLeftClick()
+    {
+        UpdateSelection("rightToLeft");
+        OrientationType = LayoutOrientation.RightToLeft;
+    }
+    private void BottomtoTopClick()
+    {
+        UpdateSelection("bottomToTop");
+        OrientationType = LayoutOrientation.BottomToTop;
+    }
+}

@@ -1,0 +1,63 @@
+﻿@page "/Appointments"
+@attribute [Authorize(Roles ="SM,TL,SR")]
+@using Syncfusion.Blazor.Schedule
+@inject IAppointmentService AppointmentService
+
+<div class="col-lg-12 control-section">
+    <SfSchedule @ref="SfSched" TValue="AppointmentModel" Width="100%" Height="650px" @bind-SelectedDate="@CurrentDate" @bind-CurrentView="@CurrentView">
+        <ScheduleEvents TValue="AppointmentModel"
+            OnActionBegin="OnActionBeginAsync" ActionCompleted="ActionCompletedAsync">
+        </ScheduleEvents>
+        <ScheduleEventSettings DataSource="@AppointmentsData"></ScheduleEventSettings>
+        <ScheduleViews>
+            <ScheduleView Option="View.Day"></ScheduleView>
+            <ScheduleView Option="View.Week"></ScheduleView>
+            <ScheduleView Option="View.WorkWeek"></ScheduleView>
+            <ScheduleView Option="View.Month"></ScheduleView>
+            <ScheduleView Option="View.Agenda"></ScheduleView>
+        </ScheduleViews>
+    </SfSchedule>
+</div>
+@code{
+    private SfSchedule<AppointmentModel> SfSched { get; set; }
+    private List<AppointmentModel> AppointmentsData { get; set; }
+    public View CurrentView { get; set; } = View.Week;
+    private int CurrentYear;
+    private DateTime CurrentDate { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        CurrentYear = DateTime.Today.Year;
+        CurrentDate = DateTime.Now;
+        AppointmentsData = await AppointmentService.GetAppointments();
+    }
+    public async Task OnActionBeginAsync(Syncfusion.Blazor.Schedule.ActionEventArgs<AppointmentModel> args)
+    {
+        if(args.ActionType == ActionType.EventCreate)
+        {
+            AppointmentModel data = args.AddedRecords[0];
+            await AppointmentService.AddAppointment(data);
+        }
+        else if(args.ActionType == ActionType.EventChange)
+        {
+            AppointmentModel data = args.ChangedRecords[0];
+            await AppointmentService.UpdateAppointment(data);
+        }
+        else if(args.ActionType == ActionType.EventRemove)
+        {
+            AppointmentModel data = args.DeletedRecords[0];
+            await AppointmentService.DeleteAppointment(data.Id);
+        }
+    }
+    public async Task ActionCompletedAsync(Syncfusion.Blazor.Schedule.ActionEventArgs<AppointmentModel> args)
+    {
+        if (args.ActionType == ActionType.EventCreate)
+        {
+            AppointmentsData = await AppointmentService.GetAppointments();
+            await SfSched.RefreshEventsAsync();
+        }      
+    }
+
+
+
+}

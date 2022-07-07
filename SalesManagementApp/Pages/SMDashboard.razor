@@ -1,0 +1,255 @@
+﻿@page "/SMDashboard"
+@attribute [Authorize(Roles ="SM")]
+@using Syncfusion.Blazor.Charts
+@using Syncfusion.Blazor
+@using Syncfusion.Blazor.Layouts
+@using System.Timers
+@inject NavigationManager NavigationManager
+@inject ISalesOrderReportService SalesOrderReportService
+
+<style>
+    .e-dashboardlayout {
+        padding: 20px;
+        z-index: 0;
+    }
+    .e-panel {
+        cursor: auto !important;
+    }
+    .chart-annotation {
+        font-weight: bold;
+        font-size: 11px;
+        position:relative;
+        border-radius: 3px;
+        background-color: rgb(36, 133, 250, 0.2);
+        padding: 5px;
+        color: @annotationFontColor;
+    }
+    .chart-annotation::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 100%;
+        margin: 0 auto;
+        width: 0;
+        height: 0;
+        border-top: 10px solid rgb(36, 133, 250, 0.2);
+        border-left: 6px solid transparent;
+        border-right: 6px solid transparent;
+        z-index : 1
+    }
+    .title {
+		font-size: 13px;
+        font-weight: 500;
+    }
+</style>
+<div class="control-section">
+    <SfDashboardLayout CellSpacing="@(new double[]{15 ,15 })" CellAspectRatio="0.8" Columns="8">
+        <DashboardLayoutPanels>
+            <DashboardLayoutEvents Created="LayoutCreated"></DashboardLayoutEvents>
+            <DashboardLayoutPanel Column="0" Row="0" SizeX="4" SizeY="2">
+                <HeaderTemplate>
+					<span class="title">Sales Manager - Qty Sales / Location / Product Category</span>
+				</HeaderTemplate>
+                <ContentTemplate>
+                    @if (isLayoutRender)
+                    {
+    <SfChart @ref="chart1" Title="Qty Sales / Location / Product Category" Width="@Width">
+        <ChartArea><ChartAreaBorder Width="0"></ChartAreaBorder></ChartArea>
+        <ChartPrimaryXAxis ValueType="Syncfusion.Blazor.Charts.ValueType.Category" Interval="1">
+            <ChartAxisMajorGridLines Width="0"></ChartAxisMajorGridLines>
+            <ChartAxisMajorTickLines Width="0"></ChartAxisMajorTickLines>
+        </ChartPrimaryXAxis>
+        <ChartPrimaryYAxis Title="Qty of Sales" Maximum="20" Interval="2">
+            <ChartAxisMajorTickLines Width="0"></ChartAxisMajorTickLines>
+            <ChartAxisLineStyle Width="0"></ChartAxisLineStyle>
+        </ChartPrimaryYAxis>
+        <ChartSeriesCollection>
+            <ChartSeries TooltipMappingName="Location" DataSource="@LocationProductCategoryData" XName="Location" YName="MountainBikes" Name="MountainBikes" ColumnSpacing="0.1" Type="ChartSeriesType.Column">
+                <ChartMarker>
+                    <ChartDataLabel Visible="false" Position="LabelPosition.Top">
+                        <ChartDataLabelFont FontWeight="600" Color="#ffffff"></ChartDataLabelFont>
+                    </ChartDataLabel>
+                </ChartMarker>
+            </ChartSeries>
+            <ChartSeries TooltipMappingName="Location" DataSource="@LocationProductCategoryData" XName="Location" YName="RoadBikes" Name="RoadBikes" ColumnSpacing="0.1" Type="ChartSeriesType.Column">
+                <ChartMarker>
+                    <ChartDataLabel Visible="false" Position="LabelPosition.Top">
+                        <ChartDataLabelFont FontWeight="600" Color="#ffffff"></ChartDataLabelFont>
+                    </ChartDataLabel>
+                </ChartMarker>
+            </ChartSeries>
+            <ChartSeries TooltipMappingName="Location" DataSource="@LocationProductCategoryData" XName="Location" YName="Camping" Name="Camping" ColumnSpacing="0.1" Type="ChartSeriesType.Column">
+                <ChartMarker>
+                    <ChartDataLabel Visible="false" Position="LabelPosition.Top">
+                        <ChartDataLabelFont FontWeight="600" Color="#ffffff"></ChartDataLabelFont>
+                    </ChartDataLabel>
+                </ChartMarker>
+            </ChartSeries>
+            <ChartSeries TooltipMappingName="Location" DataSource="@LocationProductCategoryData" XName="Location" YName="Hiking" Name="Hiking" ColumnSpacing="0.1" Type="ChartSeriesType.Column">
+                <ChartMarker>
+                    <ChartDataLabel Visible="false" Position="LabelPosition.Top">
+                        <ChartDataLabelFont FontWeight="600" Color="#ffffff"></ChartDataLabelFont>
+                    </ChartDataLabel>
+                </ChartMarker>
+            </ChartSeries>
+                        <ChartSeries TooltipMappingName="Location" DataSource="@LocationProductCategoryData" XName="Location" YName="Boots" Name="Boots" ColumnSpacing="0.1" Type="ChartSeriesType.Column">
+                <ChartMarker>
+                    <ChartDataLabel Visible="false" Position="LabelPosition.Top">
+                        <ChartDataLabelFont FontWeight="600" Color="#ffffff"></ChartDataLabelFont>
+                    </ChartDataLabel>
+                </ChartMarker>
+            </ChartSeries>
+        </ChartSeriesCollection>
+        <ChartLegendSettings Visible="true"></ChartLegendSettings>
+        <ChartTooltipSettings Header="<b>${point.tooltip}</b>" Enable="true" Shared="true"></ChartTooltipSettings>
+    </SfChart>
+                    }
+                </ContentTemplate>
+            </DashboardLayoutPanel>
+            <DashboardLayoutPanel Column="4" Row="0" SizeX="4" SizeY="2">
+                <HeaderTemplate>
+					<span class="title">Sales Manager - Qty / Location Statistics</span>
+				</HeaderTemplate>
+                <ContentTemplate>
+                        @if (isLayoutRender)
+                        {
+                       <SfAccumulationChart Title="Qty / Location Statistics">
+                            <AccumulationChartLegendSettings Visible="true" Position="LegendPosition.Top">
+                            </AccumulationChartLegendSettings>
+                            <AccumulationChartTooltipSettings Enable="true"></AccumulationChartTooltipSettings>
+                            <AccumulationChartSeriesCollection>
+                                <AccumulationChartSeries DataSource="@QtyPerLocationData" XName="GroupedFieldKey" YName="Qty" Radius="70%" InnerRadius="40%" Name="QtyPerLocation" Explode="true" ExplodeOffset="10%" ExplodeIndex="3">
+                                    <AccumulationDataLabelSettings Visible="true" Name="Label">
+                                        <AccumulationChartDataLabelFont FontWeight="600" Color="white"></AccumulationChartDataLabelFont>
+                                    </AccumulationDataLabelSettings>
+                                </AccumulationChartSeries>
+                            </AccumulationChartSeriesCollection>
+                        </SfAccumulationChart>
+                        }
+                </ContentTemplate>
+            </DashboardLayoutPanel>
+            <DashboardLayoutPanel Column="0" Row="4" SizeX="8" SizeY="3">
+                <HeaderTemplate>
+					<span class="title" style="margin-left:40%">Sales Manager - Qty / Location / Month</span>
+				</HeaderTemplate>
+                <ContentTemplate>
+                    @if (isLayoutRender)
+                     {
+    <SfChart @ref ="chart2" Title="Qty / Location / Month" Width="@Width">
+        <ChartArea><ChartAreaBorder Width="0"></ChartAreaBorder></ChartArea>
+        <ChartPrimaryXAxis ValueType="Syncfusion.Blazor.Charts.ValueType.Category" EdgeLabelPlacement="EdgeLabelPlacement.Shift">
+            <ChartAxisMajorGridLines Width="0"></ChartAxisMajorGridLines>
+        </ChartPrimaryXAxis>
+        <ChartPrimaryYAxis Title="Quantity Sold" Minimum="0" Maximum="20" Interval="4">
+            <ChartAxisLineStyle Width="0"></ChartAxisLineStyle>
+            <ChartAxisMajorTickLines Width="0"></ChartAxisMajorTickLines>
+        </ChartPrimaryYAxis>
+        <ChartTooltipSettings Enable="true"></ChartTooltipSettings>
+        <ChartSeriesCollection>
+            <ChartSeries DataSource="@QtyPerMonthLocationData" Name="TX" XName="Month" Width="2"
+                         Opacity="1" YName="TX" Type="ChartSeriesType.Line">
+                <ChartMarker Visible="true" Width="7" Height="7" IsFilled="true" Shape="ChartShape.Circle">
+                </ChartMarker>
+            </ChartSeries>
+            <ChartSeries DataSource="@QtyPerMonthLocationData" Name="CA" XName="Month" Width="2"
+                         Opacity="1" YName="CA" Type="ChartSeriesType.Line">
+                <ChartMarker Visible="true" Width="6" IsFilled="true" Height="6" Shape="ChartShape.Triangle">
+                </ChartMarker>
+            </ChartSeries>
+            <ChartSeries DataSource="@QtyPerMonthLocationData" Name="NY" XName="Month" Width="2"
+                         Opacity="1" YName="NY" Type="ChartSeriesType.Line">
+                <ChartMarker Visible="true" Width="7" IsFilled="true" Height="7" Shape="ChartShape.Diamond">
+                </ChartMarker>
+            </ChartSeries>
+            <ChartSeries DataSource="@QtyPerMonthLocationData" Name="WA" XName="Month" Width="2"
+                         Opacity="1" YName="WA" Type="ChartSeriesType.Line">
+                <ChartMarker Visible="true" Width="5" IsFilled="true"  Height="5" Shape="ChartShape.Rectangle">
+                </ChartMarker>
+            </ChartSeries>
+        </ChartSeriesCollection>
+    </SfChart>
+                    }
+                </ContentTemplate>
+            </DashboardLayoutPanel>
+        </DashboardLayoutPanels>
+    </SfDashboardLayout>
+</div>
+<style>
+    ellipse[id*=_Trackball_1] {
+        stroke-width: 1 !important;
+        stroke: white !important;
+    }
+    .e-chart-focused:focus {
+        outline: none !important;
+    }
+</style>
+@code {
+    
+    public string Width { get; set; } = "90%";
+
+    List<LocationProductCategoryModel> LocationProductCategoryData { get; set; }
+    List<GroupedFieldQtyModel> QtyPerLocationData { get; set; }
+    List<MonthLocationModel> QtyPerMonthLocationData { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        LocationProductCategoryData = await SalesOrderReportService.GetQtyLocationProductCatData();
+        QtyPerLocationData = await SalesOrderReportService.GetQtyPerLocationData();
+        QtyPerMonthLocationData = await SalesOrderReportService.GetQtyPerMonthLocationData();
+        annotationFontColor = NavigationManager.Uri.Contains("dark") || theme == Theme.HighContrast ? "#E9ECEF" : "#343A40";
+
+    }
+
+
+    private bool isLayoutRender;
+    private Theme theme;
+    private static Timer timer;
+    SfChart chart1;
+    SfChart chart2;
+    private string[] palettes = new string[] { "#61EFCD", "#CDDE1F", "#FEC200", "#CA765A", "#2485FA", "#F57D7D", "#C152D2",
+    "#8854D9", "#3D4EB8", "#00BCD7","#4472c4", "#ed7d31", "#ffc000", "#70ad47", "#5b9bd5", "#c1c1c1", "#6f6fe2", "#e269ae", "#9e480e", "#997300" };
+    private string annotationFontColor;
+ 
+    public void LayoutCreated()
+    {
+        isLayoutRender = true;
+        timer = new Timer(1000);
+        timer.Elapsed += RefreshCharts;
+        timer.AutoReset = true;
+        timer.Enabled = true;
+    }
+    private void RefreshCharts(Object source, ElapsedEventArgs e)
+    {
+        if (chart1 == null && chart2 == null)
+            return;
+        chart1.Refresh(false);
+        chart2.Refresh(false);
+        timer.Enabled = false;
+        timer.AutoReset = false;
+    }
+    void OnChartAxisLabeRender(AxisLabelRenderEventArgs args)
+    {
+        args.Text = args.Text.Replace("10000", "10K").Replace("000", "K");
+    }
+    public void OnLegendRender(AccumulationLegendRenderEventArgs args)
+    {
+        string[] textCollection = args.Text.Split(":");
+        string space = "", product = ((textCollection[0] == "Laptop " || textCollection[0] == "Mobile " || textCollection[0] == "Camera ") ? textCollection[0] : textCollection[0].Trim());
+        int textCount = product.Length,
+        condition = textCount == 2 ? 8 : 9;
+        if (textCollection[0].Equals("Camera "))
+        {
+            space = "\u00A0\u00A0\u00A0";
+        }
+        else
+        {
+            for (int i = textCount; i < condition; i++)
+            {
+                space += "\u00A0\u00A0";
+            }
+        }
+        args.Text = product + space + (textCollection[1].Trim()) + "     ";
+    }
+
+}

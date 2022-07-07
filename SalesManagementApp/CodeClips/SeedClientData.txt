@@ -1,0 +1,67 @@
+﻿            //Add Retail Outlet Data
+            modelBuilder.Entity<RetailOutlet>().HasData(new RetailOutlet
+            {
+                Id = 1,
+                Name = "Texas Outdoor Store",
+                Location = "TX"
+            });
+            modelBuilder.Entity<RetailOutlet>().HasData(new RetailOutlet
+            {
+                Id = 2,
+                Name = "California Outdoor Store",
+                Location = "CA"
+            });
+            modelBuilder.Entity<RetailOutlet>().HasData(new RetailOutlet
+            {
+                Id = 3,
+                Name = "New York Outdoor Store",
+                Location = "NY"
+            });
+            modelBuilder.Entity<RetailOutlet>().HasData(new RetailOutlet
+            {
+                Id = 4,
+                Name = " Washington Outdoor Store",
+                Location = "WA"
+            });
+
+            //Add Client data
+            modelBuilder.Entity<Client>().HasData(new Client
+            {
+                Id = 1,
+                FirstName = "James",
+                LastName = "Tailor",
+                JobTitle = "Buyer",
+                PhoneNumber = "000000000",
+                Email = "james.tailor@company.com",
+                RetailOutletId = 1
+            });
+            modelBuilder.Entity<Client>().HasData(new Client
+            {
+                Id = 2,
+                FirstName = "Jill",
+                LastName = "Hutton",
+                JobTitle = "Buyer",
+                PhoneNumber = "000000000",
+                Email = "jill.hutton@company.com",
+                RetailOutletId = 2
+            });
+            modelBuilder.Entity<Client>().HasData(new Client
+            {
+                Id = 3,
+                FirstName = "Craig",
+                LastName = "Rice",
+                JobTitle = "Buyer",
+                PhoneNumber = "000000000",
+                Email = "craig.rice@company.com",
+                RetailOutletId = 3
+            });
+            modelBuilder.Entity<Client>().HasData(new Client
+            {
+                Id = 4,
+                FirstName = "Amy",
+                LastName = "Smith",
+                JobTitle = "Buyer",
+                PhoneNumber = "000000000",
+                Email = "amy.smith@company.com",
+                RetailOutletId = 4
+            });
