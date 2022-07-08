@@ -50,6 +50,8 @@ namespace SalesManagementApp.Services
 
                     await UpdateSalesOrderReportsTable(orderId, order);
 
+                    await dbContextTransaction.CommitAsync();
+
                 }
 
                 catch (Exception)
@@ -76,7 +78,7 @@ namespace SalesManagementApp.Services
         {
             try
             {
-                List<SalesOrderReport> srItems = await (from oi in salesManagementDbContext.OrderItems
+                List<SalesOrderReport> srItems = await (from oi in this.salesManagementDbContext.OrderItems
                                                        where oi.OrderId == orderId
                                                        select new SalesOrderReport
                                                        {
