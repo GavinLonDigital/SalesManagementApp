@@ -1,0 +1,173 @@
+    protected override void OnInitialized()
+    {
+        //SM
+        EmployeeModel emp1 = new EmployeeModel
+        {
+            Id = 1,
+            FirstName = "Bob",
+            LastName = "Jones",
+            JobTitle = "SM",
+            Gender = "Male",
+            DateOfBirth = DateTime.Parse("10 Jan 1974"),
+            ReportToEmpId = null
+
+        };
+        //TL
+        EmployeeModel emp2 = new EmployeeModel
+        {
+            Id = 2,
+            FirstName = "Jenny",
+            LastName = "Marks",
+            JobTitle = "TL",
+            Gender = "Female",
+            DateOfBirth = DateTime.Parse("6 May 1976"),
+            ReportToEmpId = 1
+
+        };
+        EmployeeModel emp3 = new EmployeeModel
+        {
+            Id = 3,
+            FirstName = "Henry",
+            LastName = "Andrews",
+            JobTitle = "TL",
+            Gender = "Male",
+            DateOfBirth = DateTime.Parse("6 May 1981"),
+            ReportToEmpId = 1
+
+        };
+        EmployeeModel emp4 = new EmployeeModel
+        {
+            Id = 4,
+            FirstName = "John",
+            LastName = "Jameson",
+            JobTitle = "TL",
+            Gender = "Male",
+            DateOfBirth = DateTime.Parse("17 Apr 1984"),
+            ReportToEmpId = 1
+
+        };
+
+        //SR
+        //Team - Jenny Marks
+        EmployeeModel emp5 = new EmployeeModel
+        {
+            Id = 5,
+            FirstName = "Noah",
+            LastName = "Robinson",
+            JobTitle = "SR",
+            Gender = "Male",
+            DateOfBirth = DateTime.Parse("12 Feb 1993"),
+            ReportToEmpId = 2
+
+        };
+        EmployeeModel emp6 = new EmployeeModel
+        {
+            Id = 6,
+            FirstName = "Elijah",
+            LastName = "Hamilton",
+            JobTitle = "SR",
+            Gender = "Male",
+            DateOfBirth = DateTime.Parse("17 Jun 1993"),
+            ReportToEmpId = 2
+
+        };
+        EmployeeModel emp7 = new EmployeeModel
+        {
+            Id = 7,
+            FirstName = "Jamie",
+            LastName = "Fisher",
+            JobTitle = "SR",
+            Gender = "Male",
+            DateOfBirth = DateTime.Parse("13 Jul 1992"),
+            ReportToEmpId = 2
+
+        };
+        //SR
+        //Team - Henry Andrews
+        EmployeeModel emp8 = new EmployeeModel
+        {
+            Id = 8,
+            FirstName = "Olivia",
+            LastName = "Mills",
+            JobTitle = "SR",
+            Gender = "Female",
+            DateOfBirth = DateTime.Parse("17 Apr 1990"),
+            ReportToEmpId = 3
+
+        };
+        EmployeeModel emp9 = new EmployeeModel
+        {
+            Id = 9,
+            FirstName = "Benjamin",
+            LastName = "Lucas",
+            JobTitle = "SR",
+            Gender = "Male",
+            DateOfBirth = DateTime.Parse("12 Feb 1993"),
+            ReportToEmpId = 3
+
+        };
+
+        EmployeeModel emp10 = new EmployeeModel
+        {
+            Id = 10,
+            FirstName = "Sarah",
+            LastName = "Henderson",
+            JobTitle = "SR",
+            Gender = "Female",
+            DateOfBirth = DateTime.Parse("12 Aug 1993"),
+            ReportToEmpId = 3
+
+        };
+        //SR
+        //John Jameson
+        EmployeeModel emp11 = new EmployeeModel
+        {
+            Id = 11,
+            FirstName = "Emma",
+            LastName = "Lee",
+            JobTitle = "SR",
+            Gender = "Female",
+            DateOfBirth = DateTime.Parse("12 Nov 1995"),
+            ReportToEmpId = 4
+
+        };
+        EmployeeModel emp12 = new EmployeeModel
+        {
+            Id = 12,
+            FirstName = "Ava",
+            LastName = "Williams",
+            JobTitle = "SR",
+            Gender = "Female",
+            DateOfBirth = DateTime.Parse("15 May 1998"),
+            ReportToEmpId = 4
+
+        };
+        EmployeeModel emp13 = new EmployeeModel
+        {
+            Id = 13,
+            FirstName = "Angela",
+            LastName = "Moore",
+            JobTitle = "SR",
+            Gender = "Female",
+            DateOfBirth = DateTime.Parse("06 Jul 1994"),
+            ReportToEmpId = 4
+
+        };
+
+
+        employeeData = new List<EmployeeModel> { emp1, emp2, emp3, emp4, emp5, emp6, emp7, emp8, emp9, emp10, emp11, emp12, emp13 };
+
+    }
+
+    public class EmployeeModel
+    {
+        public int Id { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string JobTitle { get; set; }
+        public string Gender { get; set; }
+        public DateTime DateOfBirth { get; set; }
+        public int? ReportToEmpId { get; set; }
+    }
+
+    }
